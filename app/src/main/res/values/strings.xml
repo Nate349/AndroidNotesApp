@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Android Notes</string>
+    <string name="android_notes">Android Notes</string>
+    <string name="_2021_nathan_chahine">©2021, Nathan Chahine</string>
+    <string name="version_1_0">Version 1.0</string>
 </resources>
