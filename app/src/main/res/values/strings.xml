@@ -3,4 +3,8 @@
     <string name="android_notes">Android Notes</string>
     <string name="_2021_nathan_chahine">©2021, Nathan Chahine</string>
     <string name="version_1_0">Version 1.0</string>
+    <string name="about">About</string>
+    <string name="addnote">addNote</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="enter_title">Enter Title</string>
 </resources>
