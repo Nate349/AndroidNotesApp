@@ -22,8 +22,11 @@ public class MainActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.aboutbutton){
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
+            return true;
         }
         if(item.getItemId() == R.id.addNote){
+            Intent intent = new Intent(this, EditNote.class);
+            startActivity(intent);
             return true;
         }
         else{
