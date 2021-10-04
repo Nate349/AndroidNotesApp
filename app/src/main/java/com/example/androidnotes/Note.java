@@ -7,15 +7,12 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
 
 public class Note implements Serializable {
-    private final String title;
-    private final String text;
-    private final String time;
+    private String title;
+    private String text;
+    private String time;
 
     public Note(String title, String text, String updateTime) {
         this.title = title;
@@ -26,11 +23,21 @@ public class Note implements Serializable {
     public String getTitle() {
         return title;
     }
-
     public String getText() {
         return text;
     }
-    public String getTime() { return time;
+    public String getTime() {
+        return time;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+    public void setText(String text){
+        this.title = text;
+    }
+    public void setTime(String time){
+        this.time = time;
     }
 
 

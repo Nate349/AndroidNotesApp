@@ -1,5 +1,13 @@
 package com.example.androidnotes;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -8,15 +16,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,9 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         noteList.clear();
         loadFile();
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recycler);
         adapter = new NoteAdapter(noteList, this);
@@ -81,12 +80,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         int pos = recyclerView.getChildLayoutPosition(view);
-
         Note n = noteList.get(pos);
-
         Intent intent = new Intent(this, EditNote.class);
-        intent.putExtra("NOTE", n);
         intent.putExtra("position", pos);
+        intent.putExtra("existingNote", n);
         activityResultLauncher.launch(intent);
     }
 
@@ -95,15 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int pos = recyclerView.getChildLayoutPosition(v);
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         Note note = noteList.get(pos);
-        b.setPositiveButton("YES", (dialogInterface, i) -> {
-            noteList.remove(pos);
-            adapter.notifyItemRemoved(pos);
-            saveNote();
-            this.setTitle(String.format(Locale.US, "Android Notes (%d)", adapter.getItemCount()));
-        });
-        b.setNegativeButton("NO", null);
+        b.setPositiveButton("YES", (dialogInterface, i) -> { noteList.remove(pos);adapter.notifyItemRemoved(pos);saveNote(); });
+        b.setNegativeButton("NO",(dialogInterface, i) ->  {;});
         b.setTitle("Delete Note"+ " '" + note.getTitle()+ "'?");
-
         b.create().show();
         return true;
     }
@@ -129,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } catch (FileNotFoundException e) {
+            ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -144,8 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (data.getBooleanExtra("editedNote", false)){
                 Note note1 =note;
                 noteList.remove(data.getIntExtra("position",-1));
-                adapter.notifyDataSetChanged();
-
+                adapter.notifyItemRemoved((data.getIntExtra("position",-1)));
             }
             if (note != null) {
                 noteList.add(0, note);
@@ -154,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         saveNote();
-        this.setTitle(String.format(Locale.US, "Android Notes (%d)", adapter.getItemCount()));
+
     }
     private void saveNote() {
 
@@ -166,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             printWriter.print(noteList);
             printWriter.close();
             fos.close();
+            this.setTitle(String.format(Locale.US, "Android Notes (%d)", adapter.getItemCount()));
         } catch (Exception e) {
             e.getStackTrace();
         }

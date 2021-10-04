@@ -20,6 +20,7 @@ public class EditNote extends AppCompatActivity {
     boolean editedNote = false;
     String startingTitle;
     String startingText;
+    Note currentnote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +29,14 @@ public class EditNote extends AppCompatActivity {
         title = findViewById(R.id.titleText);
         text = findViewById(R.id.noteText);
         time = Calendar.getInstance().getTime().toString();
-        if (getIntent().hasExtra("NOTE")) {
-            Note n = (Note) getIntent().getSerializableExtra("NOTE");
+        if (getIntent().hasExtra("existingNote")) {
+            editedNote = true;
+            Note n = (Note) getIntent().getSerializableExtra("existingNote");
+            currentnote = n;
             title.setText(n.getTitle());
             text.setText(n.getText());
-            editedNote = true;
-
         }
-        startingTitle = title.getText().toString();
-        startingText = text.getText().toString();
+        setStart(title.getText().toString(),text.getText().toString());
     }
 
     @Override
@@ -48,7 +48,10 @@ public class EditNote extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(title.getText().toString().isEmpty()){
+        if(title.getText().toString().isEmpty() || startingText.equals(text.getText().toString()) && startingTitle.equals(title.getText().toString())){
+            if(title.getText().toString().isEmpty()){
+                Toast.makeText(getApplicationContext(), "You can not save without a title!", Toast.LENGTH_SHORT).show();
+            }
             finish();
         }
         else {
@@ -67,6 +70,10 @@ public class EditNote extends AppCompatActivity {
 
         }
     }
+    public void setStart(String startTl, String startTx){
+        startingTitle = startTl;
+        startingText = startTx;
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.saveButton){
@@ -78,7 +85,7 @@ public class EditNote extends AppCompatActivity {
     public void onSaveClick(){
         if (title.getText().toString().isEmpty()){
             Toast.makeText(getApplicationContext(), "You can not save without a title!", Toast.LENGTH_SHORT).show();
-            return;
+            finish();
         }
         else if(startingText.equals(text.getText().toString())){
             if(startingTitle.equals(title.getText().toString())){
